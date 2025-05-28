@@ -1,0 +1,2 @@
+stringSecret = read("awssecret:arn:aws:secretsmanager:us-west-2:123456789012:secret:example-secret").text
+binarySecret = read("awssecret:arn:aws:secretsmanager:us-west-2:123456789012:secret:example-binary-secret").base64
