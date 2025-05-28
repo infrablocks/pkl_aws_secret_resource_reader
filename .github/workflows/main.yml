@@ -17,8 +17,29 @@ jobs:
       - name: Install tools
         uses: asdf-vm/actions/install@v3
 
-      - name: Build
-        run: go build
+      - name: Build Darwin amd64
+        run: go build -o pkl_aws_secret_resource_reader-darwin-amd64
+        env:
+          GOOS: darwin
+          GOARCH: amd64
+
+      - name: Build Darwin arm64
+        run: go build -o pkl_aws_secret_resource_reader-darwin-arm64
+        env:
+          GOOS: darwin
+          GOARCH: arm64
+
+      - name: Build Linux amd64
+        run: go build -o pkl_aws_secret_resource_reader-linux-amd64
+        env:
+          GOOS: linux
+          GOARCH: amd64
+
+      - name: Build Linux arm64
+        run: go build -o pkl_aws_secret_resource_reader-linux-arm64
+        env:
+          GOOS: linux
+          GOARCH: arm64
 
       - name: Determine version bump level
         id: determine_bump_level
@@ -48,8 +69,8 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         with:
           tag_name: ${{ env.project_version }}
-          files: pkl_aws_secret_resource_reader
-
+          files: pkl_aws_secret_resource_reader-*
+    
       - name: Push tags
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: git push origin ${{ env.project_version }}
