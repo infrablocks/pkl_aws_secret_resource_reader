@@ -1,0 +1,55 @@
+name: Main
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_publish:
+    name: "build binary, tag and release"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install tools
+        uses: asdf-vm/actions/install@v3
+
+      - name: Build
+        run: go build
+
+      - name: Determine version bump level
+        id: determine_bump_level
+        run: echo "level=patch" >> $GITHUB_ENV
+
+      - name: Get Current Version
+        id: get_version
+        run: echo "current_version=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+
+      - name: Calculate next version
+        id: get_semver
+        uses: rickstaa/action-get-semver@v1
+        with:
+          bump_level: ${{ env.level }}
+      
+      - name: Set Project Version Output
+        id: project_version
+        run: |
+          echo "project_version=${{ steps.get_semver.outputs.next_version }}" >> $GITHUB_ENV
+
+      - name: Apply tag
+        run : git tag ${{ env.project_version }}
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        with:
+          tag_name: ${{ env.pkl_version_tag}}
+          files: pkl_aws_secret_resource_reader
+
+      - name: Push tags
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: git push origin ${{ env.project_version }}
