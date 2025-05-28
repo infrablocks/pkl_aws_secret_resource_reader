@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 	"fmt"
 	"net/url"
 	"golang.org/x/net/context"
@@ -13,6 +14,12 @@ import (
 )
 
 func main() {
+	for _, arg := range os.Args[1:] {
+		if arg == "--help" || arg == "-h" {
+			fmt.Println("\nThis program implements a Pkl external resource reader for AWS Secrets Manager.\nIt is intended to be used as an external resource reader by Pkl, not run directly.\n")
+			return
+		}
+	}
 	client, err := pkl.NewExternalReaderClient(pkl.WithExternalClientResourceReader(awsSecretReader{}))
 	if err != nil {
 		log.Fatalln(err)
