@@ -1,13 +1,13 @@
 module github.com/infrablocks/pkl_aws_secret_resource_reader
 
-go 1.24.3
+go 1.25.0
 
 require (
 	github.com/apple/pkl-go v0.10.0
 	github.com/aws/aws-sdk-go-v2 v1.36.3
 	github.com/aws/aws-sdk-go-v2/config v1.29.14
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.35.4
-	golang.org/x/net v0.40.0
+	golang.org/x/net v0.55.0
 )
 
 require (
